@@ -21,7 +21,7 @@ describe('Youtube Notification Ingress', () => {
     const req : Request = { }
     const res : Response = {
       redirect: (code: number, url: string) => {
-        assert.equal(code, 303);
+        assert.equal(code, 200);
         assert.equal(url, 'new_ref');
       }
     }
