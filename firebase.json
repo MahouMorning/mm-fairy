@@ -18,12 +18,12 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      },
-      {
         "source": "/notifications",
         "function": "notifications"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   },
