@@ -20,6 +20,10 @@
       {
         "source": "**",
         "destination": "/index.html"
+      },
+      {
+        "source": "/notifications",
+        "function": "notifications"
       }
     ]
   },
