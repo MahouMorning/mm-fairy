@@ -1,29 +1,29 @@
 
 // const test = require('firebase-functions-test')();
-import {hello, addMessage} from "../src/index";
-import {expect, assert} from "chai";
+import {addMessage} from "../src/index";
+import {assert} from "chai";
 import "mocha";
-import {Request, Response} from "express";
+import * as functions from "firebase-functions";
+
 
 // type HttpsOnRequestHandler = Parameters<typeof functions.https.onRequest>[0]
 
+//
+// describe("Hello Function", () => {
+//   it("should return Hello World", () => {
+//     const result = hello();
+//     expect(result).to.equal("Hello World!");
+//   });
+// });
 
-describe("Hello Function", () => {
-  it("should return Hello World", () => {
-    const result = hello();
-    expect(result).to.equal("Hello World!");
-  });
-});
-
-describe("Youtube Notification Ingress", () => {
+describe("addMessage", () => {
   it("should return 200 on an empty payload", () => {
-    const req : Request = { };
-    const res : Response = {
-      redirect: (code: number, url: string) => {
-        assert.equal(code, 200);
-        assert.equal(url, "new_ref");
+    const req : functions.Request = { } as any;
+    const res : functions.Response = {
+      send: (message: string) => {
+        assert.equal(message, "Hello from SendMessage.");
       },
-    };
+    } as any;
     addMessage(req, res);
   });
 });
