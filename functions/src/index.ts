@@ -17,7 +17,7 @@ export const addMessage = functions.https.onRequest(
 
 export const notifications = functions.https.onRequest(
     (request: functions.Request, response: functions.Response) => {
-      console.log("This is the notifications call. v1");
+      console.log("This is the notifications call. v2");
       let responsePayload = "";
       console.log("This is a " + request.method);
 
@@ -35,7 +35,7 @@ export const notifications = functions.https.onRequest(
       console.log("Request Query");
       console.log(request.query);
       console.log("Request Body");
-      console.log(request.body);
+      process.stdout.write(request.body.toString());
 
       response.send(responsePayload);
     });
