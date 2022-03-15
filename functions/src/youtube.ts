@@ -4,7 +4,7 @@
 
 import { XMLParser } from "fast-xml-parser";
 
-export function parsePubSubBubHub(xml: string) {
+export function parsePubSubHubbub(xml: string) {
   const parser = new XMLParser();
   let jsonobj = parser.parse(xml);
   return jsonobj
