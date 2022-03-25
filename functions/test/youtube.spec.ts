@@ -1,4 +1,4 @@
-import {parsePubSubHubbub} from "../src/youtube";
+import {parsePubSubHubbub, getYTMetadata} from "../src/youtube";
 import {assert} from "chai";
 import "mocha";
 import * as fs from "fs";
@@ -19,3 +19,11 @@ describe("parsePubSubHubbub", () => {
   })
 });
 
+describe("getYTMetadata", () => {
+  it("should throw an error when an invalid video id is inputted", () => {
+    assert.throws(() => { getYTMetadata('asdf') }, Error);
+  }),
+  it("should return a valid object when video id is valid", () => {
+    assert.isObject(getYTMetadata('bdYnZYf8pro'));
+  })
+});
