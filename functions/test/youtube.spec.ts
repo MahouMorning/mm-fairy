@@ -24,8 +24,14 @@ describe("getYTMetadata", () => {
     assert.throws(() => { getYTMetadata('asdf') }, Error);
   }),
   it("should return a valid object when video id is valid", () => {
-    getYTMetadata('bdYnZyf8pro').then((payload) => {
-      assert.isObject(payload);
+    getYTMetadata('bdYnZyf8pro').then((jsonobj) => {
+      assert.isObject(jsonobj);
+    });
+  }),
+  it("returned promise object should contain video details", () => {
+    // TODO: Research of casting jsonobj to any is a typescript problem.
+    getYTMetadata('bdYnZyf8pro').then((jsonobj: any) => {
+      assert.exists(jsonobj['player_response']['responseContext']['videoDetails']['title']);
     });
   })
 });
