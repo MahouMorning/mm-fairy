@@ -22,4 +22,19 @@ export function getYTMetadata(vid: string) {
   return jsonpromise;
 }
 
-// TODO: Resubscribe to pubsubhubbub
+// TODO: Write function to resubscribe to pubsubhubbub function
+// TODO: Write function to check if pubsubhubbub subscription is expiring soon
+// TODO: Write function to get best thumbnail
+// TODO: Write function to parse out important description
+// TODO: Write function to get video title, description, go-live time.
+export function getScheduledStreamData(jsonobj: any) {
+  return {
+    "title": jsonobj['player_response']['responseContext']['videoDetails']['title'],
+    "description": "",
+    "startTimestamp": jsonobj['player_response']['responseContext']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp']
+    "url": "https://youtu.be/" + jsonobj['player_response']['responseContext']['videoDetails']['videoId']
+  }
+}
+
+// Discord
+// TODO: Write function to create a scheduled event

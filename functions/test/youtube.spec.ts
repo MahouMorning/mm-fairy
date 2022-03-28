@@ -29,9 +29,16 @@ describe("getYTMetadata", () => {
     });
   }),
   it("returned promise object should contain video details", () => {
-    // TODO: Research of casting jsonobj to any is a typescript problem.
-    getYTMetadata('bdYnZyf8pro').then((jsonobj: any) => {
+    // TODO: Research if casting jsonobj to any is a typescript problem.
+    getYTMetadata('u4XQvAwgU0A').then((jsonobj: any) => {
       assert.exists(jsonobj['player_response']['responseContext']['videoDetails']['title']);
     });
+  }),
+  it("live streamed videos should contain liveBroadcast attributes", () => {
+    // TODO: Research if casting jsonobj to any is a typescript problem.
+    getYTMetadata('u4XQvAwgU0A').then((jsonobj: any) => {
+      assert.exists(jsonobj['player_response']['responseContext']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp']);
+    });
   })
+
 });
