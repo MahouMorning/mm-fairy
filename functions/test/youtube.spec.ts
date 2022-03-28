@@ -24,6 +24,8 @@ describe("getYTMetadata", () => {
     assert.throws(() => { getYTMetadata('asdf') }, Error);
   }),
   it("should return a valid object when video id is valid", () => {
-    assert.isObject(getYTMetadata('bdYnZYf8pro'));
+    getYTMetadata('bdYnZyf8pro').then((payload) => {
+      assert.isObject(payload);
+    });
   })
 });

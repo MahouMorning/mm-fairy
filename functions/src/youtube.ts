@@ -13,9 +13,13 @@ export function parsePubSubHubbub(xml: string) {
 }
 
 // Retrieves the data object for a given YouTube Video ID.
-export async function getYTMetadata(vid: string) {
-  if (!ytdl.validateID(vid)) throw new Error('Invalid Youtube ID found');
-  let jsonresp = await ytdl.getInfo('https://youtu.be/'+vid);
-  console.log(jsonresp);
-  return jsonresp;
+export function getYTMetadata(vid: string) {
+  if (!ytdl.validateID(vid)) {
+    throw new Error('Invalid Youtube ID found');
+  }
+  // getBasicInfo is an async function
+  let jsonpromise = ytdl.getBasicInfo('https://youtu.be/'+vid);
+  return jsonpromise;
 }
+
+// TODO: Resubscribe to pubsubhubbub
