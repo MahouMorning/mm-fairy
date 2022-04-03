@@ -25,14 +25,19 @@ export function getYTMetadata(vid: string) {
 // TODO: Write function to resubscribe to pubsubhubbub function
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
 // TODO: Write function to get best thumbnail
+export function getBestThumbnailURL(jsonobj: any) {
+  let thumbobj = jsonobj['videoDetails']['thumbnails'];
+  return thumbobj[thumbobj.length - 1]['url'];
+}
+
 // TODO: Write function to parse out important description
-// TODO: Write function to get video title, description, go-live time.
+// Write function to get video title, description, go-live time.
 export function getScheduledStreamData(jsonobj: any) {
   return {
-    "title": jsonobj['player_response']['responseContext']['videoDetails']['title'],
+    "title": jsonobj['player_response']['videoDetails']['title'],
     "description": "",
-    "startTimestamp": jsonobj['player_response']['responseContext']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp']
-    "url": "https://youtu.be/" + jsonobj['player_response']['responseContext']['videoDetails']['videoId']
+    "startTimestamp": jsonobj['player_response']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp'],
+    "url": "https://youtu.be/" + jsonobj['player_response']['videoDetails']['videoId']
   }
 }
 

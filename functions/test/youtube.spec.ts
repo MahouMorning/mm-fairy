@@ -1,10 +1,11 @@
-import {parsePubSubHubbub, getYTMetadata} from "../src/youtube";
+import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData} from "../src/youtube";
 import {assert} from "chai";
 import "mocha";
 import * as fs from "fs";
 import * as path from "path";
 
 const payload = fs.readFileSync(path.join(__dirname, 'yt_xml_example.xml'), { encoding: 'utf8' });
+const payloadScheduledStream = JSON.parse(fs.readFileSync(path.join(__dirname, 'yt_metadata_example_scheduled_livestream.json'), { encoding: 'utf8' }));
 
 describe("parsePubSubHubbub", () => {
   it("should return a JSON object", () => {
@@ -41,4 +42,29 @@ describe("getYTMetadata", () => {
     });
   })
 
+});
+
+describe("getScheduledStreamData", () => {
+  it("returned an object", () => {
+    let retdata = getScheduledStreamData(payloadScheduledStream);
+    assert.isObject(retdata);
+  })
+});
+
+describe("getBestThumbnailURL", () => {
+  it("returned a string", () => {
+    let retdata = getBestThumbnailURL(payloadScheduledStream);
+    assert.isString(retdata);
+  });
+
+  it("returns a valid URL", () => {
+    let retdata = getBestThumbnailURL(payloadScheduledStream);
+    let url;
+    try {
+      url = new URL(retdata)
+    } catch {
+      console.log("Error: Unable to construct valid URL");
+    }
+    assert.instanceOf(url,URL, "The thumbnail URL is a valid URL")
+  });
 });
