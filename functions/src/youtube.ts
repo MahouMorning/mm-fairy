@@ -25,10 +25,12 @@ export function getYTMetadata(vid: string) {
 // TODO: Write function to resubscribe to pubsubhubbub function
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
 // Function to get best thumbnail
-// TODO: We should validate, instead of assuming the last element is always biggest.
 export function getBestThumbnailURL(jsonobj: any) {
   let thumbobj = jsonobj['videoDetails']['thumbnails'];
-  return thumbobj[thumbobj.length - 1]['url'];
+  let sizearray = thumbobj.map( (obj : any) => {return obj['height']} );
+  let maxresolution = Math.max(...sizearray);
+  let maxresobj = sizearray.indexOf(maxresolution);
+  return thumbobj[maxresobj]['url'];
 }
 
 // Write function to parse out important description
@@ -41,7 +43,8 @@ export function getScheduledStreamData(jsonobj: any) {
     "title": jsonobj['player_response']['videoDetails']['title'],
     "description": getDescription(jsonobj),
     "startTimestamp": jsonobj['player_response']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp'],
-    "url": "https://youtu.be/" + jsonobj['player_response']['videoDetails']['videoId']
+    "url": "https://youtu.be/" + jsonobj['player_response']['videoDetails']['videoId'],
+    "thumbnail": getBestThumbnailURL(jsonobj)
   }
 }
 
