@@ -18,6 +18,7 @@ export function getYTMetadata(vid: string) {
     throw new Error('Invalid Youtube ID found');
   }
   // getBasicInfo is an async function
+  // TODO: Test: Figure out how to mock this when unit testing.
   let jsonpromise = ytdl.getBasicInfo('https://youtu.be/'+vid);
   return jsonpromise;
 }
