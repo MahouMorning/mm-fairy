@@ -24,7 +24,8 @@ export function getYTMetadata(vid: string) {
 
 // TODO: Write function to resubscribe to pubsubhubbub function
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
-// TODO: Write function to get best thumbnail
+// Function to get best thumbnail
+// TODO: We should validate, instead of assuming the last element is always biggest.
 export function getBestThumbnailURL(jsonobj: any) {
   let thumbobj = jsonobj['videoDetails']['thumbnails'];
   return thumbobj[thumbobj.length - 1]['url'];
