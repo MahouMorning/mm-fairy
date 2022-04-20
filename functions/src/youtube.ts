@@ -31,12 +31,15 @@ export function getBestThumbnailURL(jsonobj: any) {
   return thumbobj[thumbobj.length - 1]['url'];
 }
 
-// TODO: Write function to parse out important description
+// Write function to parse out important description
+export function getDescription(jsonobj: any) {
+  return jsonobj['player_response']['microformat']['playerMicroformatRenderer']['description']['simpleText']?.split('\n\n\n\n')[0];
+}
 // Write function to get video title, description, go-live time.
 export function getScheduledStreamData(jsonobj: any) {
   return {
     "title": jsonobj['player_response']['videoDetails']['title'],
-    "description": "",
+    "description": getDescription(jsonobj),
     "startTimestamp": jsonobj['player_response']['microformat']['playerMicroformatRenderer']['liveBroadcastDetails']['startTimestamp'],
     "url": "https://youtu.be/" + jsonobj['player_response']['videoDetails']['videoId']
   }

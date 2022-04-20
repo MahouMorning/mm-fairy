@@ -1,4 +1,4 @@
-import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData} from "../src/youtube";
+import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription} from "../src/youtube";
 import {assert} from "chai";
 import "mocha";
 import * as fs from "fs";
@@ -47,8 +47,29 @@ describe("getYTMetadata", () => {
 describe("getScheduledStreamData", () => {
   it("returned an object", () => {
     let retdata = getScheduledStreamData(payloadScheduledStream);
+    console.log(retdata);
     assert.isObject(retdata);
-  })
+  });
+  it("returned object contains a non-empty title string", () => {
+    let retdata = getScheduledStreamData(payloadScheduledStream);
+    assert.isString(retdata['title']);
+    assert.isNotEmpty(retdata['title']);
+  });
+  it("returned object contains a non-empty description string", () => {
+    let retdata = getScheduledStreamData(payloadScheduledStream);
+    assert.isString(retdata['description']);
+    assert.isNotEmpty(retdata['description']);
+  });
+  it("returned object contains a non-empty startTimestamp string", () => {
+    let retdata = getScheduledStreamData(payloadScheduledStream);
+    assert.isString(retdata['startTimestamp']);
+    assert.isNotEmpty(retdata['startTimestamp']);
+  });
+  it("returned object contains a non-empty url string", () => {
+    let retdata = getScheduledStreamData(payloadScheduledStream);
+    assert.isString(retdata['url']);
+    assert.isNotEmpty(retdata['url']);
+  });
 });
 
 describe("getBestThumbnailURL", () => {
@@ -66,5 +87,12 @@ describe("getBestThumbnailURL", () => {
       console.log("Error: Unable to construct valid URL");
     }
     assert.instanceOf(url,URL, "The thumbnail URL is a valid URL")
+  });
+});
+
+describe("getDescription", () => {
+  it("should return a string", () => {
+    let retdata = getDescription(payloadScheduledStream);
+    assert.isString(retdata);
   });
 });
