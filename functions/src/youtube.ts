@@ -4,6 +4,9 @@
 
 import { XMLParser } from "fast-xml-parser";
 import * as ytdl from 'ytdl-core';
+import { doc, getDoc } from "firebase/firestore";
+import { PubSubHubbub } from "pubsubhubbub";
+import * from 'config';
 
 // Converts the payloads from the PubSubHubbub into JSON.
 export function parsePubSubHubbub(xml: string) {
@@ -24,7 +27,15 @@ export function getYTMetadata(vid: string) {
 }
 
 // TODO: Write function to resubscribe to pubsubhubbub function
+export function resubscribe(topicURL: string) {
+  PubSubHubbub.subscribe(topicURL, "https://pubsubhubbub.appspot.com", callbackURL, callback);
+}
+
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
+export function isExpiringSoon(channelId: string, expireThreshold: number) {
+  return true;
+}
+
 // Function to get best thumbnail
 export function getBestThumbnailURL(jsonobj: any) {
   let thumbobj = jsonobj['videoDetails']['thumbnails'];
