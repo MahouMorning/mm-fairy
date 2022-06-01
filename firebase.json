@@ -22,6 +22,10 @@
         "function": "notifications"
       },
       {
+        "source": "/resub",
+        "function": "resubscribe"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }

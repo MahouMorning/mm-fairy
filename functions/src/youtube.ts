@@ -4,9 +4,8 @@
 
 import { XMLParser } from "fast-xml-parser";
 import * as ytdl from 'ytdl-core';
-import { doc, getDoc } from "firebase/firestore";
 import { PubSubHubbub } from "pubsubhubbub";
-import * from 'config';
+import * as config from './config';
 
 // Converts the payloads from the PubSubHubbub into JSON.
 export function parsePubSubHubbub(xml: string) {
@@ -27,13 +26,26 @@ export function getYTMetadata(vid: string) {
 }
 
 // TODO: Write function to resubscribe to pubsubhubbub function
-export function resubscribe(topicURL: string) {
-  PubSubHubbub.subscribe(topicURL, "https://pubsubhubbub.appspot.com", callbackURL, callback);
+export function resubscribe(topicURL?: string) {
+  if (topicURL !== undefined && topicURL.length <= 10) {
+    // Default behavior. Resubscribe all in config if less than one day.
+    config.youtube.topicURLs.forEach( (topicItem : string) => {
+      if (isExpiringSoon(topicItem)) {
+        PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
+        console.log("topic [" + topicItem + "] has been resubscribed.");
+      } else {
+        console.log("topic [" + topicItem + "] is not up for resubscription yet.");
+      }
+    });
+  } else {
+    // Overridden bahavior. Resubscribe this topicURL.
+    PubSubHubbub.subscribe(topicURL, config.youtube.hubURL, config.youtube.callbackURL);
+  }
 }
 
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
-export function isExpiringSoon(channelId: string, expireThreshold: number) {
-  return true;
+export function isExpiringSoon(channelId: string, expireThreshold?: number) {
+  return false;
 }
 
 // Function to get best thumbnail
