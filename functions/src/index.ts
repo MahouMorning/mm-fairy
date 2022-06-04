@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+import * as youtube from "./youtube";
 
 // type HttpsOnRequestHandler = Parameters<typeof functions.https.onRequest>[0]
 // // Start writing Firebase Functions
@@ -37,5 +38,12 @@ export const notifications = functions.https.onRequest(
       console.log("Request Body");
       process.stdout.write(request.body.toString());
 
+      // Parse payload
+      let pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
+      let vidmetadatapromise = youtube.getYTMetadata(pubsubobj['feed']['entry']['yt:videoId']);
+      vidmetadatapromise.then( vidjsonobj => {
+        youtube.getScheduledStreamData(vidjsonobj);
+      });
+      // Create event
       response.send(responsePayload);
     });

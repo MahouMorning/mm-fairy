@@ -4,7 +4,6 @@
 
 import { XMLParser } from "fast-xml-parser";
 import * as ytdl from 'ytdl-core';
-import { PubSubHubbub } from "pubsubhubbub";
 import * as config from './config';
 
 // Converts the payloads from the PubSubHubbub into JSON.
@@ -15,14 +14,22 @@ export function parsePubSubHubbub(xml: string) {
 }
 
 // Retrieves the data object for a given YouTube Video ID.
-export function getYTMetadata(vid: string) {
+export async function getYTMetadata(vid: string) {
   if (!ytdl.validateID(vid)) {
     throw new Error('Invalid Youtube ID found');
+  } else {
+    // getBasicInfo is an async function
+    // TODO: Test: Figure out how to mock this when unit testing.
+    let jsonpromise;
+    try {
+      jsonpromise = await ytdl.getBasicInfo('https://youtu.be/'+vid);
+    } catch (error) {
+      console.log("Error being thrown!: " + vid);
+      console.error(error);
+      throw new Error(error);
+    }
+    return jsonpromise;
   }
-  // getBasicInfo is an async function
-  // TODO: Test: Figure out how to mock this when unit testing.
-  let jsonpromise = ytdl.getBasicInfo('https://youtu.be/'+vid);
-  return jsonpromise;
 }
 
 // TODO: Write function to resubscribe to pubsubhubbub function
@@ -31,7 +38,7 @@ export function resubscribe(topicURL?: string) {
     // Default behavior. Resubscribe all in config if less than one day.
     config.youtube.topicURLs.forEach( (topicItem : string) => {
       if (isExpiringSoon(topicItem)) {
-        PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
+//        PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
         console.log("topic [" + topicItem + "] has been resubscribed.");
       } else {
         console.log("topic [" + topicItem + "] is not up for resubscription yet.");
@@ -39,7 +46,8 @@ export function resubscribe(topicURL?: string) {
     });
   } else {
     // Overridden bahavior. Resubscribe this topicURL.
-    PubSubHubbub.subscribe(topicURL, config.youtube.hubURL, config.youtube.callbackURL);
+  //  PubSubHubbub.subscribe(topicURL, config.youtube.hubURL, config.youtube.callbackURL);
+    console.log("Overriden behavior stub");
   }
 }
 

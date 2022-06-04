@@ -1,8 +1,13 @@
 import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription} from "../src/youtube";
-import {assert} from "chai";
+import * as chai from 'chai' 
+import * as chaiAsPromised from 'chai-as-promised'
 import "mocha";
 import * as fs from "fs";
 import * as path from "path";
+
+chai.use(chaiAsPromised);
+const expect = chai.expect;
+const assert = chai.assert;
 
 const payload = fs.readFileSync(path.join(__dirname, 'yt_xml_example.xml'), { encoding: 'utf8' });
 const payloadScheduledStream = JSON.parse(fs.readFileSync(path.join(__dirname, 'yt_metadata_example_scheduled_livestream.json'), { encoding: 'utf8' }));
@@ -21,8 +26,9 @@ describe("parsePubSubHubbub", () => {
 });
 
 describe("getYTMetadata", () => {
-  it("should throw an error when an invalid video id is inputted", () => {
-    assert.throws(() => { getYTMetadata('asdf') }, Error);
+  it("should throw an error when an invalid video id is inputted", async function () {
+    let data = getYTMetadata('asdf');
+    expect(data).to.eventually.be.rejectedWith("Invalid Youtube ID found");
   }),
   it("should return a valid object when video id is valid", () => {
     getYTMetadata('bdYnZyf8pro').then((jsonobj) => {
