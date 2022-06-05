@@ -17,7 +17,7 @@ export const addMessage = functions.https.onRequest(
     });
 
 export const notifications = functions.https.onRequest(
-    (request: functions.Request, response: functions.Response) => {
+    async (request: functions.Request, response: functions.Response) => {
       console.log("This is the notifications call. v2");
       let responsePayload = "";
       console.log("This is a " + request.method);
@@ -41,12 +41,15 @@ export const notifications = functions.https.onRequest(
       // Parse payload
       let pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
       // Grab extra metadata about the video id.
-      let vidmetadatapromise = youtube.getYTMetadata(pubsubobj['feed']['entry']['yt:videoId']);
+      let vidmetadata = await youtube.getYTMetadata(pubsubobj['feed']['entry']['yt:videoId']);
       // Return relevant data used for event scheduling
-      vidmetadatapromise.then( vidjsonobj => {
-        youtube.getScheduledStreamData(vidjsonobj);
-      });
+      let scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
       // Check if event is less than 24 hours.
+      if (Math.abs(new Date(scheduledEventMetadata['startTimestamp']).getTime() - new Date().getTime()) / 36e5 <= 24) {
+        console.log("Creating Discord Event: " + scheduledEventMetadata['title']);
+      } else {
+        console.log("Saving event: " + scheduledEventMetadata['title']);
+      }
       // if so, create event.
       // if not, save for later.
       // Create event
