@@ -23,10 +23,10 @@ export async function getYTMetadata(vid: string) {
     let jsonpromise;
     try {
       jsonpromise = await ytdl.getBasicInfo('https://youtu.be/'+vid);
-    } catch (error) {
+    } catch (error:any) {
       console.log("Error being thrown!: " + vid);
       console.error(error);
-      throw new Error(error);
+      throw new Error(error.message);
     }
     return jsonpromise;
   }
