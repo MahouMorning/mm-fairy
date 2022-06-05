@@ -40,10 +40,15 @@ export const notifications = functions.https.onRequest(
 
       // Parse payload
       let pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
+      // Grab extra metadata about the video id.
       let vidmetadatapromise = youtube.getYTMetadata(pubsubobj['feed']['entry']['yt:videoId']);
+      // Return relevant data used for event scheduling
       vidmetadatapromise.then( vidjsonobj => {
         youtube.getScheduledStreamData(vidjsonobj);
       });
+      // Check if event is less than 24 hours.
+      // if so, create event.
+      // if not, save for later.
       // Create event
       response.send(responsePayload);
     });
