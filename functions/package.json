@@ -9,7 +9,7 @@
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log",
     "test": "nyc mocha -r ts-node/register test/**/*.spec.ts",
-    "only-test": "mocha -r ts-node/register test/**/*.spec.ts --inspect-brk"
+    "test-debug": "mocha -r ts-node/register test/**/*.spec.ts --inspect-brk"
   },
   "engines": {
     "node": "16"

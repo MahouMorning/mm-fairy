@@ -45,8 +45,16 @@ export const notifications = functions.https.onRequest(
       // Return relevant data used for event scheduling
       let scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
       // Check if event is less than 24 hours.
-      if (Math.abs(new Date(scheduledEventMetadata['startTimestamp']).getTime() - new Date().getTime()) / 36e5 <= 24) {
-        console.log("Creating Discord Event: " + scheduledEventMetadata['title']);
+      let scheduledDate = new Date(scheduledEventMetadata['startTimestamp']);
+      let currentDate = new Date();
+      if (scheduledDate < currentDate) {
+        console.warn("ScheduledDate is in the past!");
+        console.warn("ScheduledDate: " + scheduledDate.getTime());
+        console.warn("CurrentDate: " + currentDate.getTime());
+      }
+      if (Math.abs(scheduledDate.getTime() - currentDate.getTime()) / 36e5 <= 24) {
+        console.log("We should create a Discord Event: " + scheduledEventMetadata['title']);
+        console.log("This event is scheduled for" + scheduledDate);
       } else {
         console.log("Saving event: " + scheduledEventMetadata['title']);
       }
