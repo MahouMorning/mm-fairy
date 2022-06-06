@@ -18,7 +18,7 @@ export const addMessage = functions.https.onRequest(
 
 export const notifications = functions.https.onRequest(
     async (request: functions.Request, response: functions.Response) => {
-      console.log("This is the notifications call. v2");
+      console.log("This is the notifications call. v3");
       let responsePayload = "";
       console.log("This is a " + request.method);
 
@@ -36,7 +36,7 @@ export const notifications = functions.https.onRequest(
       console.log("Request Query");
       console.log(request.query);
       console.log("Request Body");
-      process.stdout.write(request.body.toString());
+      process.stdout.write(request.body.toString() + "\n");
 
       // Parse payload
       let pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
@@ -47,14 +47,18 @@ export const notifications = functions.https.onRequest(
       // Check if event is less than 24 hours.
       let scheduledDate = new Date(scheduledEventMetadata['startTimestamp']);
       let currentDate = new Date();
+      let timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5)
       if (scheduledDate < currentDate) {
         console.warn("ScheduledDate is in the past!");
         console.warn("ScheduledDate: " + scheduledDate.getTime());
         console.warn("CurrentDate: " + currentDate.getTime());
+        console.warn("Time difference: " + (timediffhrs) + " hours");
       }
-      if (Math.abs(scheduledDate.getTime() - currentDate.getTime()) / 36e5 <= 24) {
+      if (Math.abs(timediffhrs) <= 24) {
         console.log("We should create a Discord Event: " + scheduledEventMetadata['title']);
         console.log("This event is scheduled for" + scheduledDate);
+      } else if (timediffhrs < 0) {
+        console.log("Event in the past, ignoring...");
       } else {
         console.log("Saving event: " + scheduledEventMetadata['title']);
       }
