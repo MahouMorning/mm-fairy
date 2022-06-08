@@ -39,15 +39,15 @@ export const notifications = functions.https.onRequest(
       process.stdout.write(request.body.toString() + "\n");
 
       // Parse payload
-      let pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
+      const pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
       // Grab extra metadata about the video id.
-      let vidmetadata = await youtube.getYTMetadata(pubsubobj['feed']['entry']['yt:videoId']);
+      const vidmetadata = await youtube.getYTMetadata(pubsubobj["feed"]["entry"]["yt:videoId"]);
       // Return relevant data used for event scheduling
-      let scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
+      const scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
       // Check if event is less than 24 hours.
-      let scheduledDate = new Date(scheduledEventMetadata['startTimestamp']);
-      let currentDate = new Date();
-      let timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5)
+      const scheduledDate = new Date(scheduledEventMetadata["startTimestamp"]);
+      const currentDate = new Date();
+      const timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5);
       if (scheduledDate < currentDate) {
         console.warn("ScheduledDate is in the past!");
         console.warn("ScheduledDate: " + scheduledDate.getTime());
@@ -55,12 +55,12 @@ export const notifications = functions.https.onRequest(
         console.warn("Time difference: " + (timediffhrs) + " hours");
       }
       if (Math.abs(timediffhrs) <= 24) {
-        console.log("We should create a Discord Event: " + scheduledEventMetadata['title']);
+        console.log("We should create a Discord Event: " + scheduledEventMetadata["title"]);
         console.log("This event is scheduled for" + scheduledDate);
       } else if (timediffhrs < 0) {
         console.log("Event in the past, ignoring...");
       } else {
-        console.log("Saving event: " + scheduledEventMetadata['title']);
+        console.log("Saving event: " + scheduledEventMetadata["title"]);
       }
       // if so, create event.
       // if not, save for later.
