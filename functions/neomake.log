@@ -1,0 +1,47 @@
+00:52:37 650296 [D +0.02] [-.-:1:1] Using setting automake.ignore_filetypes=['startify'] from 'global'.
+00:52:37 650296 [D      ] [-.-:1:1] Using setting automake.events={'TextChangedI': {}, 'FileType': {}, 'FileChangedShellPost': {}, 'InsertLeave': {}, 'BufWritePost': {'delay': 0}, 'BufWinEnter': {}, 'TextChanged': {}} from 'global'.
+00:52:37 650296 [D      ] [-.-:1:1] automake: configured buffer for ft=typescript (eslint (default)).
+00:52:37 650296 [D      ] [-.-:1:1] automake: setting tick for new buffer.
+00:52:37 650296 [D      ] [-.-:1:1] automake: handling event FileType.
+00:52:37 650296 [D      ] [-.-:1:1] automake: automake for event FileType.
+00:52:37 650296 [D      ] [-.-:1:1] automake: tick changed (new).
+00:52:37 650296 [D      ] [-.-:1:1] automake: started timer (500ms): 1.
+00:52:37 650296 [D      ] [-.-:1:1] automake: handling event BufWinEnter.
+00:52:37 650296 [D      ] [-.-:1:1] automake: automake for event BufWinEnter.
+00:52:37 650296 [D      ] [-.-:1:1] automake: stopped existing timer: 1.
+00:52:37 650296 [D      ] [-.-:1:1] automake: tick changed (new).
+00:52:37 650296 [D      ] [-.-:1:1] automake: increasing delay (1/0 canceled timers/makes, rate=1.20): 500 => 600/3000.
+00:52:37 650296 [D      ] [-.-:1:1] automake: started timer (600ms): 2.
+00:52:37 650296 [D +0.60] [-.-:1:1] automake: callback for timer 2 (via BufWinEnter).
+00:52:37 650296 [D      ] [-.-:1:1] automake: neomake_do_automake: BufWinEnter.
+00:52:37 650296 [D      ] [-.-:1:1] automake: tick changed (new).
+00:52:37 650296 [D      ] [-.-:1:1] automake: enabled makers: eslint.
+00:52:37 650296 [D      ] [1.-:1:1] Running makers: eslint.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_file_err texthl=NeomakeErrorSign text=✖.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_project_err texthl=NeomakeErrorSign text=✖.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_file_warn texthl=NeomakeWarningSign text=‼.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_project_warn texthl=NeomakeWarningSign text=‼.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_file_info texthl=NeomakeInfoSign text=ℹ.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_project_info texthl=NeomakeInfoSign text=ℹ.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_file_msg texthl=NeomakeMessageSign text=➤.
+00:52:37 650296 [D      ] Defining sign: sign define neomake_project_msg texthl=NeomakeMessageSign text=➤.
+00:52:37 650296 [D      ] [-.-:1:1] automake: updating tick: 3.
+00:52:37 650296 [D      ] [-.-:1:1] Using setting cwd='%:p:h' from 'maker'.
+00:52:37 650296 [V      ] [1.1:1:1] Starting async job: eslint --format=json index.ts.
+00:52:37 650296 [D      ] [1.1:1:1] cwd: /home/chase/test/functions/src (changed).
+00:52:37 650296 [D      ] [-.-:1:1] automake: started jobs: [1].
+00:52:38 650296 [D +0.67] [1.1:1:1] output on stdout: ['[{"filePath":"/home/chase/test/functions/src/index.ts","messages":[{"ruleId":null,"fatal":true,"severity":2,"message":"Parsing error: Cannot read file ''/home/chase/test/functions/src/tsconfig.json''."}],"suppressedMessages":[],"errorCount":1,"fatalErrorCount":1,"warningCount":0,"fixableErrorCount":0,"fixableWarningCount":0,"source":"console.log(\"Hello World\");\n","usedDeprecatedRules":[{"ruleId":"valid-jsdoc","replacedBy":[]},{"ruleId":"require-jsdoc","replacedBy":[]}]}]', ''].
+00:52:38 650296 [D      ] [1.1:1:1] exit: eslint: 1.
+00:52:38 650296 [D      ] [1.1:1:1] Processing 1 lines of output.
+00:52:38 650296 [D      ] [-.-:1:1] Using setting cwd='%:p:h' from 'maker'.
+00:52:38 650296 [D      ] [1.1:1:1] Calling maker's process_json method with 1 JSON entries.
+00:52:38 650296 [E      ] [1.1:1:1] Error during output processing for eslint: Vim(let):E716: Key not present in Dictionary: "line, 'col': err.column, 'type': type, }".
+00:52:38 650296 [D      ] [1.1:1:1] (in function <SNR>76_nvim_exit_handler_buffered[18]..<SNR>76_exit_handler[31]..<SNR>76_RegisterJobOutput[30]..<SNR>76_process_pending_output[3]..<SNR>76_ProcessPendingOutput[40]..<SNR>76_ProcessJobOutput[6]..<SNR>76_pcall[3]..<SNR>76_ProcessJobOutput[35]..neomake#makers#ft#javascript#ProcessEslint, line 5)
+00:52:38 650296 [D      ] [1.1:1:1] eslint: completed with exit code 1.
+00:52:38 650296 [D      ] [1.1:1:1] Cleaning jobinfo.
+00:52:38 650296 [D      ] [1.-:1:1] File-level errors cleaned.
+00:52:38 650296 [D      ] [1.-:1:1] Cleaning location list.
+00:52:38 650296 [D      ] list: call: set: [0, [], ' ', {'context': {'neomake': {'make_info': 'make_id=1'}}, 'items': [], 'title': 'Neomake[auto]: s/index.ts (eslint✓)'}].
+00:52:38 650296 [D      ] list: got qfid (action=set): 1.
+00:52:38 650296 [D      ] [1.-:1:1] Cleaning make info.
+00:52:42 650296 [D +3.63] Calling VimLeave.
