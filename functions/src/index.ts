@@ -45,7 +45,7 @@ export const notifications = functions.https.onRequest(
       // Return relevant data used for event scheduling
       const scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
       // Check if event is less than 24 hours.
-      const scheduledDate = new Date(scheduledEventMetadata["startTimestamp"]);
+      const scheduledDate = scheduledEventMetadata["startTimestamp"] != undefined ? new Date(scheduledEventMetadata["startTimestamp"]) : new Date();
       const currentDate = new Date();
       const timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5);
       if (scheduledDate < currentDate) {

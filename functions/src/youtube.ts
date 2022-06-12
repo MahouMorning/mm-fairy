@@ -5,7 +5,7 @@
 import {XMLParser} from "fast-xml-parser";
 import * as ytdl from "ytdl-core";
 import * as config from "./config";
-import {YtVidMetadata, ThumbnailElement} from "./yt_vid_metadata";
+import {ThumbnailElement} from "./yt_vid_metadata";
 
 /**
  * export parsePubSubHubbub() Converts the payloads from the PubSubHubBub into JSON.
@@ -33,10 +33,11 @@ export async function getYTMetadata(vid: string) {
   } else {
     // getBasicInfo is an async function
     // TODO: Test: Figure out how to mock this when unit testing.
-    let jsonpromise : YtVidMetadata;
+    let jsonpromise : ytdl.videoInfo;
     try {
       jsonpromise = await ytdl.getBasicInfo("https://youtu.be/"+vid);
-    } catch (error:Error) {
+      // eslint-disable-next-line
+    } catch (error:any) {
       console.log("Error being thrown!: " + vid);
       console.error(error);
       throw new Error(error.message);
@@ -94,7 +95,7 @@ export function isExpiringSoon(channelId: string, expireThreshold?: number) {
  *
  * @return {string}
  */
-export function getBestThumbnailURL(jsonobj: YtVidMetadata) {
+export function getBestThumbnailURL(jsonobj: ytdl.videoInfo) {
   const thumbobj = jsonobj["videoDetails"]["thumbnails"];
   const sizearray = thumbobj.map( (obj : ThumbnailElement) => {
     return obj["height"];
@@ -112,7 +113,7 @@ export function getBestThumbnailURL(jsonobj: YtVidMetadata) {
  *
  * @return {string}
  */
-export function getDescription(jsonobj: YtVidMetadata) {
+export function getDescription(jsonobj: ytdl.videoInfo) {
   return jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["description"]["simpleText"]
       .split("\n\n\n\n")[0];
 }
@@ -124,12 +125,12 @@ export function getDescription(jsonobj: YtVidMetadata) {
  *
  * @return {Object}
  */
-export function getScheduledStreamData(jsonobj: YtVidMetadata) {
+export function getScheduledStreamData(jsonobj: ytdl.videoInfo) {
   return {
     "title": jsonobj["player_response"]["videoDetails"]["title"],
     "description": getDescription(jsonobj),
     // eslint-disable-next-line
-    "startTimestamp": jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]["startTimestamp"],
+    "startTimestamp": jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]?.["startTimestamp"],
     "url": "https://youtu.be/" + jsonobj["player_response"]["videoDetails"]["videoId"],
     "thumbnail": getBestThumbnailURL(jsonobj),
   };

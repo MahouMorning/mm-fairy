@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, no-prototype-builtins, no-empty, @typescript-eslint/no-empty-interface */
 // To parse this data:
 //
 //   import { Convert, YtVidMetadata } from "./file";
@@ -8,9 +9,9 @@
 // match the expected interface, even if the JSON is valid.
 
 export interface YtVidMetadata {
-    page: string;
+    page?: string;
     player_response: PlayerResponse;
-    response: Response;
+    response?: Response;
     html5player: string;
     formats: any[];
     related_videos: RelatedVideo[];
@@ -2111,7 +2112,9 @@ function transform(val: any, typ: any, getProps: any, key: any = ""): any {
       const typ = typs[i];
       try {
         return transform(val, typ, getProps);
-      } catch (_) {}
+      } catch (_) {
+        console.log("Error in transformUnion");
+      }
     }
     return invalidValue(typs, val);
   }
@@ -2197,9 +2200,9 @@ function o(props: any[], additional: any) {
   return {props, additional};
 }
 
-function m(additional: any) {
-  return {props: [], additional};
-}
+// function m(additional: any) {
+//   return {props: [], additional};
+// }
 
 function r(name: string) {
   return {ref: name};
