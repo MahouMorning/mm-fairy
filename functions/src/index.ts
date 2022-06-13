@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as youtube from "./youtube";
+import * as discord from "./discord";
 
 // type HttpsOnRequestHandler = Parameters<typeof functions.https.onRequest>[0]
 // // Start writing Firebase Functions
@@ -67,3 +68,18 @@ export const notifications = functions.https.onRequest(
       // Create event
       response.send(responsePayload);
     });
+
+export const testDiscordEvent = functions
+    .runWith({secrets: ["DISCORD_BOT_TOKEN"]})
+    .https.onRequest(
+        async (request: functions.Request, response: functions.Response) => {
+          console.log("Running test Discord Event Creation");
+          console.log("Request:");
+          console.log(request);
+          const token : string = process.env.DISCORD_BOT_TOKEN ? process.env.DISCORD_BOT_TOKEN : "";
+          const retval = await discord.testCreateEvent(token);
+          console.log(retval);
+          console.log("Done?");
+          response.send("Done?");
+        }
+    );

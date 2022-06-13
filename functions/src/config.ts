@@ -5,3 +5,7 @@ export const youtube = {
   hubURL: "https://pubsubhubbub.appspot.com",
   topicURLs: ["https://www.youtube.com/xml/feeds/videos.xml?channel_id=UC4owGnNWOngye2uvIAnGrlA"],
 };
+
+export const discord = {
+  guildID: "807403208321662976",
+};
