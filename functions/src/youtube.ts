@@ -117,24 +117,31 @@ export function getDescription(jsonobj: ytdl.videoInfo) {
   return jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["description"]["simpleText"]
       .split("\n\n\n\n")[0];
 }
+
+export interface ytEventData {
+  title: string,
+  description: string,
+  startTimestamp: string,
+  url: string
+  thumbnail: string
+}
 // Write function to get video title, description, go-live time.
 /**
  * exportgetScheduledStreamData() Return the object used for event generation
  *
  * @param {Object} jsonobj: The returned object from getYTMetadata()
  *
- * @return {Object}
+ * @return {ytEventData}
  */
-export function getScheduledStreamData(jsonobj: ytdl.videoInfo) {
+export function getScheduledStreamData(jsonobj: ytdl.videoInfo): ytEventData {
+  const startDate = jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"] != undefined ? jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]?.["startTimestamp"] : "";
   return {
     "title": jsonobj["player_response"]["videoDetails"]["title"],
     "description": getDescription(jsonobj),
     // eslint-disable-next-line
-    "startTimestamp": jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]?.["startTimestamp"],
+    "startTimestamp": startDate,
     "url": "https://youtu.be/" + jsonobj["player_response"]["videoDetails"]["videoId"],
     "thumbnail": getBestThumbnailURL(jsonobj),
   };
 }
 
-// Discord
-// TODO: Write function to create a scheduled event
