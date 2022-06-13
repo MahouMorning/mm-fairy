@@ -57,12 +57,12 @@ export async function getYTMetadata(vid: string) {
 export function resubscribe(topicURL?: string) {
   if (topicURL !== undefined && topicURL.length <= 10) {
     // Default behavior. Resubscribe all in config if less than one day.
-    config.youtube.topicURLs.forEach( (topicItem : string) => {
-      if (isExpiringSoon(topicItem)) {
+    config.youtube.channelInfo.forEach( (channel : {"oshi_mark": string, "first_name": string, "last_name": string, "foreign_name": string, "channel_id": string, "topic": string}) => {
+      if (isExpiringSoon(channel.topic)) {
         // PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
-        console.log("topic [" + topicItem + "] has been resubscribed.");
+        console.log("topic [" + channel.channel_id + "] has been resubscribed.");
       } else {
-        console.log("topic [" + topicItem + "] is not up for resubscription yet.");
+        console.log("topic [" + channel.channel_id + "] is not up for resubscription yet.");
       }
     });
   } else {
@@ -125,6 +125,24 @@ export interface ytEventData {
   url: string
   thumbnail: string
 }
+
+/**
+ * getChannelIdentifier() Builds channel identifier for event title
+ *
+ * @param {string} channelID: The channel ID being identified (Not the friendly name)
+ *
+ * @return {string}
+ */
+export function getChannelIdentifier(channelID: string) {
+  const selectedChannel = config.youtube.channelInfo.filter(function(item) {
+    return item.channel_id === channelID;
+  });
+  if (selectedChannel.length == 0) {
+    console.log("getChannelIdentifier: Channel ID not found");
+    return "";
+  }
+  return "["+selectedChannel[0].oshi_mark+" "+selectedChannel[0].first_name+"]";
+}
 // Write function to get video title, description, go-live time.
 /**
  * exportgetScheduledStreamData() Return the object used for event generation
@@ -135,8 +153,9 @@ export interface ytEventData {
  */
 export function getScheduledStreamData(jsonobj: ytdl.videoInfo): ytEventData {
   const startDate = jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"] != undefined ? jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]?.["startTimestamp"] : "";
+  const titleComposition = [getChannelIdentifier(jsonobj["player_response"]["videoDetails"]["channelId"]), jsonobj["player_response"]["videoDetails"]["title"]];
   return {
-    "title": jsonobj["player_response"]["videoDetails"]["title"],
+    "title": titleComposition.join(" "),
     "description": getDescription(jsonobj),
     // eslint-disable-next-line
     "startTimestamp": startDate,
