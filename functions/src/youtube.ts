@@ -153,7 +153,7 @@ export function getChannelIdentifier(channelID: string) {
  */
 export function getScheduledStreamData(jsonobj: ytdl.videoInfo): ytEventData {
   const startDate = jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"] != undefined ? jsonobj["player_response"]["microformat"]["playerMicroformatRenderer"]["liveBroadcastDetails"]?.["startTimestamp"] : "";
-  const titleComposition = [getChannelIdentifier(jsonobj["player_response"]["videoDetails"]["channelId"]), jsonobj["player_response"]["videoDetails"]["title"]];
+  const titleComposition = [getChannelIdentifier(jsonobj["player_response"]["videoDetails"]["channelId"]), "-", jsonobj["player_response"]["videoDetails"]["title"]];
   return {
     "title": titleComposition.join(" "),
     "description": getDescription(jsonobj),
