@@ -54,9 +54,15 @@ export async function createExternalEvent(eventDetails: youtube.ytEventData) {
     throw Error("Token not available");
   }
   const rest = new REST({version: "10"}).setToken(process.env.DISCORD_BOT_TOKEN);
+  const curDate = new Date();
   const startDate = new Date(eventDetails.startTimestamp);
   const endDate = new Date(startDate);
   endDate.setHours(endDate.getHours() + 2);
+  if (Math.abs(curDate.getTime() - startDate.getTime()) < 60) {
+    // If start time is within a minute of the current time,
+    // add additional buffer to ensure start is in the future.
+    startDate.setMinutes(startDate.getMinutes() + 5);
+  }
   // TODO: Handle Thumbnail grabbing from URL
   const options : RESTPostAPIGuildScheduledEventJSONBody = {
     "name": eventDetails.title,
