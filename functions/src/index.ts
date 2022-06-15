@@ -44,32 +44,39 @@ export const notifications = functions
           if (request.method == "POST") {
             // Parse payload
             const pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
-            // Grab extra metadata about the video id.
-            const vidmetadata = await youtube.getYTMetadata(pubsubobj["feed"]["entry"]["yt:videoId"]);
-            // Return relevant data used for event scheduling
-            const scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
-            // Check if event is less than 24 hours.
-            const scheduledDate = scheduledEventMetadata["startTimestamp"] != undefined ? new Date(scheduledEventMetadata["startTimestamp"]) : new Date();
-            const currentDate = new Date();
-            const timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5);
-            if (scheduledDate < currentDate) {
-              console.warn("ScheduledDate is in the past!");
-              console.warn("ScheduledDate: " + scheduledDate.getTime());
-              console.warn("CurrentDate: " + currentDate.getTime());
-              console.warn("Time difference: " + (timediffhrs) + " hours");
+            // Check if this is an addition of a video or a deletion
+            if (pubsubobj["feed"]["entry"]["yt:videoId"] != undefined) {
+              // Grab extra metadata about the video id.
+              const vidmetadata = await youtube.getYTMetadata(pubsubobj["feed"]["entry"]["yt:videoId"]);
+              // Return relevant data used for event scheduling
+              const scheduledEventMetadata = youtube.getScheduledStreamData(vidmetadata);
+              // Check if event is less than 24 hours.
+              const scheduledDate = scheduledEventMetadata["startTimestamp"] != undefined ? new Date(scheduledEventMetadata["startTimestamp"]) : new Date();
+              const currentDate = new Date();
+              const timediffhrs = ((scheduledDate.getTime() - currentDate.getTime()) / 36e5);
+              if (scheduledDate < currentDate) {
+                console.warn("ScheduledDate is in the past!");
+                console.warn("ScheduledDate: " + scheduledDate.getTime());
+                console.warn("CurrentDate: " + currentDate.getTime());
+                console.warn("Time difference: " + (timediffhrs) + " hours");
+              }
+              if (Math.abs(timediffhrs) <= 24) {
+                console.log("We should create a Discord Event: " + scheduledEventMetadata["title"]);
+                console.log("This event is scheduled for" + scheduledDate);
+                discord.createExternalEvent(scheduledEventMetadata);
+              } else if (timediffhrs < 0) {
+                console.log("Event in the past, ignoring...");
+              } else {
+                console.log("We should save this event for later: " + scheduledEventMetadata["title"]);
+              }
+              // if so, create event.
+              // if not, save for later.
+              // Create event
             }
-            if (Math.abs(timediffhrs) <= 24) {
-              console.log("We should create a Discord Event: " + scheduledEventMetadata["title"]);
-              console.log("This event is scheduled for" + scheduledDate);
-              discord.createExternalEvent(scheduledEventMetadata);
-            } else if (timediffhrs < 0) {
-              console.log("Event in the past, ignoring...");
-            } else {
-              console.log("We should save this event for later: " + scheduledEventMetadata["title"]);
+            if (pubsubobj["feed"]["at:deleted-entry"] != undefined) {
+              // Detected a deleted video payload
+              console.log("Video is being deleted: " + pubsubobj["feed"]["at:deleted-entry"]["@_ref"]);
             }
-            // if so, create event.
-            // if not, save for later.
-            // Create event
           }
           response.send(responsePayload);
         });

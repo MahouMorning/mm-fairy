@@ -15,7 +15,11 @@ import {ThumbnailElement} from "./yt_vid_metadata";
  * @return {any} object: The JS Object containing the converted XML data
  */
 export function parsePubSubHubbub(xml: string) {
-  const parser = new XMLParser();
+  const options = {
+        ignoreAttributes: false,
+        attributeNamePrefix : "@_"
+  };
+  const parser = new XMLParser(options);
   const jsonobj = parser.parse(xml);
   return jsonobj;
 }
