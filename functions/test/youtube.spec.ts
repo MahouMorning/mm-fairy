@@ -9,7 +9,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const assert = chai.assert;
 
-const payload = fs.readFileSync(path.join(__dirname, "yt_xml_example.xml"), {encoding: "utf8"});
+const payload = fs.readFileSync(path.join(__dirname, "yt_xml_example_newvideo.xml"), {encoding: "utf8"});
 const payloadScheduledStream = JSON.parse(fs.readFileSync(path.join(__dirname, "yt_metadata_example_scheduled_livestream.json"), {encoding: "utf8"}));
 
 describe("parsePubSubHubbub", () => {
