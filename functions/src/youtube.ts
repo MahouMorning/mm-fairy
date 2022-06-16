@@ -16,8 +16,8 @@ import {ThumbnailElement} from "./yt_vid_metadata";
  */
 export function parsePubSubHubbub(xml: string) {
   const options = {
-        ignoreAttributes: false,
-        attributeNamePrefix : "@_"
+    ignoreAttributes: false,
+    attributeNamePrefix: "@_",
   };
   const parser = new XMLParser(options);
   const jsonobj = parser.parse(xml);
