@@ -45,7 +45,7 @@ export const notifications = functions
             // Parse payload
             const pubsubobj = youtube.parsePubSubHubbub(request.body.toString());
             // Check if this is an addition of a video or a deletion
-            if (pubsubobj["feed"]["entry"]["yt:videoId"] != undefined) {
+            if ( pubsubobj["feed"] != undefined && pubsubobj["feed"]["entry"] != undefined && pubsubobj["feed"]["entry"]["yt:videoId"] != undefined) {
               // Grab extra metadata about the video id.
               const vidmetadata = await youtube.getYTMetadata(pubsubobj["feed"]["entry"]["yt:videoId"]);
               // Return relevant data used for event scheduling
@@ -73,7 +73,7 @@ export const notifications = functions
               // if not, save for later.
               // Create event
             }
-            if (pubsubobj["feed"]["at:deleted-entry"] != undefined) {
+            if (pubsubobj["feed"] != undefined && pubsubobj["feed"]["at:deleted-entry"] != undefined) {
               // Detected a deleted video payload
               console.log("Video is being deleted: " + pubsubobj["feed"]["at:deleted-entry"]["@_ref"]);
             }
