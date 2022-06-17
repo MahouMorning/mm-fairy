@@ -10,6 +10,7 @@ const expect = chai.expect;
 const assert = chai.assert;
 
 const payload = fs.readFileSync(path.join(__dirname, "yt_xml_example_newvideo.xml"), {encoding: "utf8"});
+const payloadDeleted = fs.readFileSync(path.join(__dirname, "yt_xml_example_deletevideo.xml"), {encoding: "utf8"});
 const payloadScheduledStream = JSON.parse(fs.readFileSync(path.join(__dirname, "yt_metadata_example_scheduled_livestream.json"), {encoding: "utf8"}));
 
 describe("parsePubSubHubbub", () => {
@@ -22,6 +23,12 @@ describe("parsePubSubHubbub", () => {
     assert.exists(output["feed"]["entry"]["title"]);
     assert.exists(output["feed"]["entry"]["yt:videoId"]);
     assert.exists(output["feed"]["entry"]["yt:channelId"]);
+  });
+  it("returned an object contains videoid, ref and date attributes", () => {
+    const output = parsePubSubHubbub(payloadDeleted);
+    assert.exists(output["feed"]["at:deleted-entry"]);
+    assert.exists(output["feed"]["at:deleted-entry"]["@_ref"]);
+    assert.exists(output["feed"]["at:deleted-entry"]["@_when"]);
   });
 });
 
