@@ -18,12 +18,12 @@ import * as functions from "firebase-functions";
 
 describe("addMessage", () => {
   it("should return 200 on an empty payload", () => {
-    const req : functions.Request = { } as any;
-    const res : functions.Response = {
+    const req = { } as functions.Request;
+    const res = {
       send: (message: string) => {
         assert.equal(message, "Hello from SendMessage.");
       },
-    } as any;
+    } as functions.Response;
     addMessage(req, res);
   });
 });
