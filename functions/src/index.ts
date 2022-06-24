@@ -60,12 +60,13 @@ export const notifications = functions
                 console.warn("CurrentDate: " + currentDate.getTime());
                 console.warn("Time difference: " + (timediffhrs) + " hours");
               }
-              if (Math.abs(timediffhrs) <= 24) {
+              if (timediffhrs <= 24 && timediffhrs >= 0) {
                 console.log("We should create a Discord Event: " + scheduledEventMetadata["title"]);
-                console.log("This event is scheduled for" + scheduledDate);
+                console.log("This event is scheduled for: " + scheduledDate);
                 discord.createExternalEvent(scheduledEventMetadata);
               } else if (timediffhrs < 0) {
                 console.log("Event in the past, ignoring...");
+                // TODO: Implement ask the mods, instead of ignoring
               } else {
                 console.log("We should save this event for later: " + scheduledEventMetadata["title"]);
               }
