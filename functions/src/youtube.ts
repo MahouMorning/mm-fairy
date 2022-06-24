@@ -6,6 +6,7 @@ import {XMLParser} from "fast-xml-parser";
 import * as ytdl from "ytdl-core";
 import * as config from "./config";
 import {ThumbnailElement} from "./yt_vid_metadata";
+import fetch from 'node-fetch';
 
 /**
  * export parsePubSubHubbub() Converts the payloads from the PubSubHubBub into JSON.
@@ -89,6 +90,16 @@ export function isExpiringSoon(channelId: string, expireThreshold?: number) {
   console.log("Channel ID: " + channelId);
   console.log("Expiration Threshold: " + expireThreshold);
   return false;
+}
+
+export async function getPubSubHubBubSubscriptionInfo(topicURL: string, secret?: string = "") {
+  const endpointURL = new URL(config.youtube.hubURL + "/subscription-details");
+  endpointURL.searchParams.append("hub.callback", config.youtube.callbackURL);
+  endpointURL.searchParams.append("hub.topic", topicURL);
+  endpointURL.searchParams.append("hub.secret", secret);
+  const response = await fetch(endpointURL.href);
+  console.log(response);
+  return {};
 }
 
 // Function to get best thumbnail

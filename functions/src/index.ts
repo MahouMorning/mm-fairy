@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as youtube from "./youtube";
 import * as discord from "./discord";
+import * as config from "./config";
 
 // type HttpsOnRequestHandler = Parameters<typeof functions.https.onRequest>[0]
 // // Start writing Firebase Functions
@@ -95,3 +96,17 @@ export const testDiscordEvent = functions
           response.send("Done?");
         }
     );
+
+export const testPubSub = functions.https.onRequest(
+        async (request: functions.Request, response: functions.Response) => {
+          console.log("Running test pubsub info");
+          console.log("Request:");
+          console.log(request);
+          const retval = await youtube.getPubSubHubBubSubscriptionInfo(config.youtube.channelInfo[0].topic);
+          console.log(retval);
+          console.log("Done?");
+          response.send("Done?");
+        }
+    );
+
+
