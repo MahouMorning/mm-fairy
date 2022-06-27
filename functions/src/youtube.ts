@@ -92,7 +92,7 @@ export function isExpiringSoon(channelId: string, expireThreshold?: number) {
   return false;
 }
 
-export async function getPubSubHubBubSubscriptionInfo(topicURL: string, secret?: string = "") {
+export async function getPubSubHubBubSubscriptionInfo(topicURL: string, secret = "") {
   const endpointURL = new URL(config.youtube.hubURL + "/subscription-details");
   endpointURL.searchParams.append("hub.callback", config.youtube.callbackURL);
   endpointURL.searchParams.append("hub.topic", topicURL);
