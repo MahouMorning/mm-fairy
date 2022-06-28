@@ -1,9 +1,10 @@
-import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription} from "../src/youtube";
+import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription, getPubSubHubBubSubscriptionInfo} from "../src/youtube";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import "mocha";
 import * as fs from "fs";
 import * as path from "path";
+//import * as sinon from 'sinon';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -106,5 +107,14 @@ describe("getDescription", () => {
   it("should return a string", () => {
     const retdata = getDescription(payloadScheduledStream);
     assert.isString(retdata);
+  });
+});
+
+describe("getPubSubHubBubSubscriptionInfo", () => {
+  it("should return a json object", () => {
+//    const apistub = sinon.stub(global, "fetch");
+    const retdata = getPubSubHubBubSubscriptionInfo("https://www.youtube.com/xml/feeds/videos.xml?channel_id=UC4owGnNWOngye2uvIAnGrlA");
+    expect(retdata).to.eventually.be.instanceof(Object);
+//    apistub.restore();
   });
 });
