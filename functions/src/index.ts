@@ -100,12 +100,10 @@ export const testDiscordEvent = functions
 export const testPubSub = functions.https.onRequest(
         async (request: functions.Request, response: functions.Response) => {
           console.log("Running test pubsub info");
-          console.log("Request:");
-          console.log(request);
           const retval = await youtube.getPubSubHubBubSubscriptionInfo(config.youtube.channelInfo[0].topic);
+          console.log("Response:");
           console.log(retval);
-          console.log("Done?");
-          response.send("Done?");
+          response.json(retval);
         }
     );
 

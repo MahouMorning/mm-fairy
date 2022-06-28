@@ -15,10 +15,20 @@ import fetch from 'node-fetch';
  *
  * @return {any} object: The JS Object containing the converted XML data
  */
-export function parsePubSubHubbub(xml: string) {
-  const options = {
+export function parsePubSubHubbub(xml: string, html = false) {
+
+  const options = (html == false) ?
+  {
     ignoreAttributes: false,
     attributeNamePrefix: "@_",
+  } :
+  {
+    ignoreAttributes: false,
+    preserveOrder: true,
+    unpairedTags: ["hr", "br", "link", "meta"],
+    stopNodes : [ "*.pre", "*.script"],
+    processEntities: true,
+    htmlEntities: true
   };
   const parser = new XMLParser(options);
   const jsonobj = parser.parse(xml);
@@ -98,8 +108,22 @@ export async function getPubSubHubBubSubscriptionInfo(topicURL: string, secret =
   endpointURL.searchParams.append("hub.topic", topicURL);
   endpointURL.searchParams.append("hub.secret", secret);
   const response = await fetch(endpointURL.href);
-  console.log(response);
-  return {};
+  const retobj = parsePubSubHubbub(await response.text(), true);
+  const parsedobj = {
+    "topicURL": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][1]["p"][0]["#text"],
+    "callbackURL": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][1]["dd"][0]["#text"],
+    "state": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][3]["dd"][0]["#text"],
+    "lastSuccessfulVerification": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][5]["dd"][0]["#text"],
+    "expirationTime": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][7]["dd"][0]["#text"],
+    "lastSubscribeRequest": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][9]["dd"][0]["#text"],
+    "lastUnsubscribeRequest": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][11]["dd"][0]["#text"],
+    "lastVerificationError": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][13]["dd"][0]["#text"].replace(/(\r\n|\n|\r|\s\s)/gm, ""),
+    "lastDeliveryError": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][15]["dd"][0]["#text"].replace(/(\r\n|\n|\r|\s\s)/gm, ""),
+    "aggregateStatistics": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][2]["dl"][17]["dd"][0]["#text"].replace(/(\r\n|\n|\r|\s\s)/gm, ""),
+    "lastContentReceived": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][4]["dl"][1]["dd"][0]["#text"],
+    "lastContentDelivered": retobj[0]["html"][0]["head"][3]["body"][0]["div"][0]["div"][0]["div"][4]["dl"][3]["dd"][0]["#text"],
+  };
+  return parsedobj;
 }
 
 // Function to get best thumbnail

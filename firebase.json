@@ -30,6 +30,10 @@
         "function": "testDiscordEvent"
       },
       {
+        "source": "/testPubSub",
+        "function": "testPubSub"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
