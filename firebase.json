@@ -18,6 +18,22 @@
     ],
     "rewrites": [
       {
+        "source": "/notifications",
+        "function": "notifications"
+      },
+      {
+        "source": "/resub",
+        "function": "resubscribe"
+      },
+      {
+        "source": "/testDiscord",
+        "function": "testDiscordEvent"
+      },
+      {
+        "source": "/testPubSub",
+        "function": "testPubSub"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
