@@ -1,10 +1,11 @@
-import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription, getPubSubHubBubSubscriptionInfo} from "../src/youtube";
+import {parsePubSubHubbub, getYTMetadata, getBestThumbnailURL, getScheduledStreamData, getDescription, getPubSubHubBubSubscriptionInfo, isExpiringSoon, getChannelIdentifier} from "../src/youtube";
 import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import "mocha";
 import * as fs from "fs";
 import * as path from "path";
-//import * as sinon from 'sinon';
+import * as fetchModule from "node-fetch";
+import * as sinon from "sinon";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -13,6 +14,7 @@ const assert = chai.assert;
 const payload = fs.readFileSync(path.join(__dirname, "yt_xml_example_newvideo.xml"), {encoding: "utf8"});
 const payloadDeleted = fs.readFileSync(path.join(__dirname, "yt_xml_example_deletevideo.xml"), {encoding: "utf8"});
 const payloadScheduledStream = JSON.parse(fs.readFileSync(path.join(__dirname, "yt_metadata_example_scheduled_livestream.json"), {encoding: "utf8"}));
+const payloadPubSubInfo = fs.readFileSync(path.join(__dirname, "pubsub_details_example.html"), {encoding: "utf8"});
 
 describe("parsePubSubHubbub", () => {
   it("should return a JSON object", () => {
@@ -116,5 +118,39 @@ describe("getPubSubHubBubSubscriptionInfo", () => {
     const retdata = getPubSubHubBubSubscriptionInfo("https://www.youtube.com/xml/feeds/videos.xml?channel_id=UC4owGnNWOngye2uvIAnGrlA");
     expect(retdata).to.eventually.be.instanceof(Object);
 //    apistub.restore();
+  });
+});
+
+describe("isExpiringSoon", () => {
+  it("should return false when expiration is too great", () => {
+    const spy = sinon.stub(fetchModule, "default");
+    // https://stackoverflow.com/questions/43960646/testing-mocking-node-fetch-dependency-that-it-is-used-in-a-class-method
+    spy.returns(new Promise((resolve) => resolve(new fetchModule.Response(
+      payloadPubSubInfo, 
+      {"status": 200}
+    ))));
+    const retdata = isExpiringSoon("UC4owGnNWOngye2uvIAnGrlA", 24);
+    expect(retdata).to.eventually.be.false;
+    spy.restore();
+  });
+  it("should return true when expiration is greater than threshold", () => {
+    const spy = sinon.stub(fetchModule, "default");
+    // https://stackoverflow.com/questions/43960646/testing-mocking-node-fetch-dependency-that-it-is-used-in-a-class-method
+    spy.returns(new Promise((resolve) => resolve(new fetchModule.Response(
+      payloadPubSubInfo, 
+      {"status": 200}
+    ))));
+    const retdata = isExpiringSoon("UC4owGnNWOngye2uvIAnGrlA", 168);
+    expect(retdata).to.eventually.be.true;
+    spy.restore();
+  });
+});
+
+describe("getChannelIdentifier", () => {
+  it("should return a valid channel identifier string", () => {
+    assert.equal(getChannelIdentifier("UC4owGnNWOngye2uvIAnGrlA"), "[❇️ Fray]")
+  });
+  it("should return an empty channel identifier string when invalid channel id is given", () => {
+    assert.equal(getChannelIdentifier("asdfasdfasdfasdf"), "")
   });
 });

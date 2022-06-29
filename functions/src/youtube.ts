@@ -63,23 +63,23 @@ export async function getYTMetadata(vid: string) {
 
 // TODO: Write function to resubscribe to pubsubhubbub function
 /**
- * exportresubscribe() Resubscribes to PubSubHubBub
+ * export async resubscribe() Resubscribes to PubSubHubBub
  *
  * @param {string} topicURL?: A string of the topicURL that PubSubHubBub is listening to
  *
  * @return {void}
  */
-export function resubscribe(topicURL?: string) {
+export async function resubscribe(topicURL?: string) {
   if (topicURL !== undefined && topicURL.length <= 10) {
     // Default behavior. Resubscribe all in config if less than one day.
-    config.youtube.channelInfo.forEach( (channel : {"oshi_mark": string, "first_name": string, "last_name": string, "foreign_name": string, "channel_id": string, "topic": string}) => {
-      if (isExpiringSoon(channel.topic)) {
-        // PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
-        console.log("topic [" + channel.channel_id + "] has been resubscribed.");
-      } else {
-        console.log("topic [" + channel.channel_id + "] is not up for resubscription yet.");
-      }
-    });
+//    config.youtube.channelInfo.forEach( (channel : {"oshi_mark": string, "first_name": string, "last_name": string, "foreign_name": string, "channel_id": string, "topic": string}) => {
+//      if (await isExpiringSoon(channel.topic)) {
+//        // PubSubHubbub.subscribe(topicItem, config.youtube.hubURL, config.youtube.callbackURL);
+//        console.log("topic [" + channel.channel_id + "] has been resubscribed.");
+//      } else {
+//        console.log("topic [" + channel.channel_id + "] is not up for resubscription yet.");
+//      }
+//    });
   } else {
     // Overridden bahavior. Resubscribe this topicURL.
   //  PubSubHubbub.subscribe(topicURL, config.youtube.hubURL, config.youtube.callbackURL);
@@ -89,16 +89,27 @@ export function resubscribe(topicURL?: string) {
 
 // TODO: Write function to check if pubsubhubbub subscription is expiring soon
 /**
- * exportisExpiringSoon() Determines if PubSubHubBub subscription is expiring soon
+ * export async isExpiringSoon() Determines if PubSubHubBub subscription is expiring soon
  *
  * @param {string} channelId: The ID of the channel
- * @param {number} expireThreshold?: The number of hours before soon is achieved
+ * @param {number} expireThreshold: The number of hours before "soon" is achieved. Defaults to 24.
  *
  * @return {boolean}
  */
-export function isExpiringSoon(channelId: string, expireThreshold?: number) {
+export async function isExpiringSoon(channelId: string, expireThreshold = 24) {
   console.log("Channel ID: " + channelId);
   console.log("Expiration Threshold: " + expireThreshold);
+  const filtered = config.youtube.channelInfo.filter(function(item) {
+    return item.channel_id === channelId;
+  });
+  if (filtered.length > 0) {
+    const subinfo = await getPubSubHubBubSubscriptionInfo(filtered[0].topic);
+    const timeDiff = new Date(subinfo.expirationTime).getTime() - new Date().getTime();
+    console.log("TimeDiff between expiration and now: " + timeDiff + "ms");
+    if (timeDiff < (expireThreshold * 3600 * 1000)) {
+      return true;
+    }
+  }
   return false;
 }
 
